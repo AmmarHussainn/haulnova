@@ -46,8 +46,8 @@ const Navbar = () => {
             Home
           </a>
          
-          <a href="/handicraftgallery" className="text-[#333333] p-2">About Us</a>
-          <a href="/carpetservices" className="text-[#333333] p-2"> Services</a>
+          <a href="#aboutsection" className="text-[#333333] p-2">About Us</a>
+          <a href="#servicesSection" className="text-[#333333] p-2"> Services</a>
           <a href='/contactus' className='text-[#333333] p-2'>
             Contact Us
           </a>
@@ -81,8 +81,8 @@ const Navbar = () => {
           
             {/* Carpet Dropdown in Mobile Menu */}
           
-            <a href="/handicraftgallery" className="text-[#333333] border-b border-[#333333] p-2">About Us</a>
-          <a href="/carpetservices" className="text-[#333333] border-b border-[#333333] p-2"> Services</a>
+            <a href="#aboutsection" className="text-[#333333] border-b border-[#333333] p-2">About Us</a>
+          <a href="#servicesSection" className="text-[#333333] border-b border-[#333333] p-2"> Services</a>
         
            
           </nav>

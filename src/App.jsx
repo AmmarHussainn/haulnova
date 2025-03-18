@@ -1,13 +1,13 @@
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import PrivateRoute from "./components/PrivateRoute"; // Import it
 
 const routes = [
-  // PUBLIC ROUTES
   { path: "/", component: lazy(() => import("./screens/public/home")) },
-  // { path: "/contactus", component: lazy(() => import("./screens/public/contactus")) },
-  // PRIVATE ROUTES
-  // { path: "/dashboard", component: lazy(() => import("./screens/private/dashboard")), private: true },
-  // {path: "/login", component : lazy(()=> import('../src/components/Login'))},
+  { path: "/login", component: lazy(() => import("./components/login")) },
+
+  // PRIVATE ROUTE
+  { path: "/dashboard", component: lazy(() => import("./screens/private/dashboard")), private: true },
 ];
 
 const Loader = () => (
@@ -18,21 +18,25 @@ const Loader = () => (
 
 function App() {
   return (
- 
-
     <Router>
-    <Suspense fallback={<Loader />}>
-      <Routes>
-        {routes.map(({ path, component: Component, private: isPrivate }) => (
-          <Route 
-            key={path} 
-            path={path} 
-            element={isPrivate ? <PrivateRoute><Component /></PrivateRoute> : <Component />} 
-          />
-        ))}
-      </Routes>
-    </Suspense>
-  </Router>
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          {routes.map(({ path, component: Component, private: isPrivate }) => (
+            <Route
+              key={path}
+              path={path}
+              element={isPrivate ? (
+                <PrivateRoute>
+                  <Component />
+                </PrivateRoute>
+              ) : (
+                <Component />
+              )}
+            />
+          ))}
+        </Routes>
+      </Suspense>
+    </Router>
   );
 }
 
