@@ -15,11 +15,11 @@ const Home = () => {
   return (
     <div className='  bg-[##ffffff]'>
       <Navbar />
-      <div className=' w-full max-w-6xl    mx-auto flex flex-col md:py-0 pt-24 lg:flex-row items-center h-full px-6 gap-6'>
+      <div className=' w-full max-w-6xl font-bebas   mx-auto flex flex-col md:py-0 pt-24 lg:flex-row items-center h-full px-6 gap-6'>
         <div className='text-[#252525] lg:w-1/2 w-full text-center lg:text-left py-10'>
           <h1 className='text-4xl font-libre font-semibold mb-4'>
-            Reliable Truck Dispatching Services for Owner-Operators
-            & Fleet Owners
+            Reliable Truck Dispatching Services for Owner-Operators & Fleet
+            Owners
           </h1>
           <p className='text-lg font-libre '>
             Haul Nova provides expert truck dispatching services, helping
@@ -28,8 +28,8 @@ const Home = () => {
             freight without the hassle!
           </p>
           <a
-           
             className=' mt-6 inline-block px-8 py-3 cursor-pointer bg-[#878482] text-[#FFFFFF] font-semibold text-lg   rounded-lg shadow-lg hover:bg-[#444444] transition duration-300'
+            href='/contactus'
           >
             Schedule a Call
           </a>
@@ -43,15 +43,15 @@ const Home = () => {
           />
         </div>
       </div>
-      <StatsSection/>
-      <DispatchService/>
-      <RouteAssistance/>
-      <BeyondDispatchServices/>
-      <PriceDispatchServices/>
-      <FAQSection/>
+      <StatsSection />
+      <DispatchService />
+      <RouteAssistance />
+      <BeyondDispatchServices />
+      <PriceDispatchServices />
+      <FAQSection />
       {/* <AboutUs/>
       <Services/> */}
-      <Footer/>
+      <Footer />
     </div>
   );
 };
