@@ -7,6 +7,7 @@ const routes = [
   {path:'/contactus', component: lazy(() => import("./screens/public/contactus"))},
 
   // PRIVATE ROUTE
+  {path: 'selection', component: lazy(() => import("./screens/private/selectionscreen"))},
   { path: "/dashboard", component: lazy(() => import("./screens/private/dashboard")), private: true },
 ];
 

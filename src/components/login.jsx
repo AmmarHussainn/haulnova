@@ -29,7 +29,7 @@ const Login = () => {
         localStorage.setItem('authToken', data.token); // Save token properly
         toast.success('Login successful! Redirecting...');
         setTimeout(() => {
-          navigate('/dashboard'); // Redirect to dashboard
+          navigate('/selection'); // Redirect to selection screen
         }, 2000); // Delay for 2 seconds to show the success message
       } else {
         setError(data.message || 'Invalid email or password');
