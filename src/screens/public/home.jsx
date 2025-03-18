@@ -10,12 +10,14 @@ import RouteAssistance from '../../components/routeassistance';
 import BeyondDispatchServices from '../../components/beyondespatchservice';
 import PriceDispatchServices from '../../components/priceddispatched';
 import FAQSection from '../../components/faqsections';
+import HeroSection from '../../components/herosection';
+import BigPictureSection from '../../components/bigpicture';
 
 const Home = () => {
   return (
     <div className='  bg-[##ffffff]'>
       <Navbar />
-      <div className=' w-full max-w-6xl font-bebas   mx-auto flex flex-col md:py-0 pt-24 lg:flex-row items-center h-full px-6 gap-6'>
+      {/* <div className=' w-full max-w-6xl font-bebas   mx-auto flex flex-col md:py-0 pt-24 lg:flex-row items-center h-full px-6 gap-6'>
         <div className='text-[#252525] lg:w-1/2 w-full text-center lg:text-left py-10'>
           <h1 className='text-4xl font-libre font-semibold mb-4'>
             Reliable Truck Dispatching Services for Owner-Operators & Fleet
@@ -42,9 +44,12 @@ const Home = () => {
             className='w-full h-[100%] md:h-[70%] max-w-lg object-contain '
           />
         </div>
-      </div>
+      </div> */}
+
+      <HeroSection/>
       <StatsSection />
       <DispatchService />
+      <BigPictureSection/>
       <RouteAssistance />
       <BeyondDispatchServices />
       <PriceDispatchServices />

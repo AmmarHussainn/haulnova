@@ -5,6 +5,9 @@ const Images = {
     roadassistance : '/images/roadassistance.png',
     beyoondespatch : '/images/beyoondespatch.png',
     pricedispatched : '/images/pricedispatched.png',
+    herovideo :  '/images/herovideo.mp4',
+    truck1 : '/images/truck1.png',
+    truck2 : '/images/truck2.png',
     
 }   
 

@@ -1,0 +1,5 @@
+.bg-Video{
+  background-image : url("../public/images/herovideo.mp4");
+  background-size: cover;
+  background-position: center;
+}
