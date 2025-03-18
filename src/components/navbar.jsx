@@ -21,14 +21,14 @@ const Navbar = () => {
 
   return (
     <div className='bg-[#ffff] backdrop-blur-sm h-[100px] px-6  py-4 fixed w-full top-0 z-50'>
-
-      
       <div className='flex justify-between items-center'>
         {/* Mobile Menu Toggle Button */}
 
-        <div >
-          <img src={Images.haulnovalogo} alt='haulnovalogo' className='w-20'/>
-          
+        <div>
+          <a href='/'>
+
+          <img src={Images.haulnovalogo} alt='haulnovalogo' className='w-20' />
+          </a>
         </div>
         <button
           className='lg:hidden text-[#333333] focus:outline-none'
@@ -45,16 +45,20 @@ const Navbar = () => {
           <a href='/' className='text-[#333333] p-2 hover:backdrop-blur-sm'>
             Home
           </a>
-         
-          <a href="#aboutsection" className="text-[#333333] p-2">About Us</a>
-          <a href="#servicesSection" className="text-[#333333] p-2"> Services</a>
+
+          {/* <a href='#aboutsection' className='text-[#333333] p-2'>
+            About Us
+          </a>
+          <a href='#servicesSection' className='text-[#333333] p-2'>
+            
+            Services
+          </a> */}
           <a href='/contactus' className='text-[#333333] p-2'>
             Contact Us
           </a>
         </div>
 
         {/* Logo */}
-      
       </div>
 
       {/* Mobile Menu with Slide-in Animation */}
@@ -78,13 +82,24 @@ const Navbar = () => {
             >
               Home
             </a>
-          
-            {/* Carpet Dropdown in Mobile Menu */}
-          
-            <a href="#aboutsection" className="text-[#333333] border-b border-[#333333] p-2">About Us</a>
-          <a href="#servicesSection" className="text-[#333333] border-b border-[#333333] p-2"> Services</a>
-        
-           
+
+
+            {/* <a
+              href='#aboutsection'
+              className='text-[#333333] border-b border-[#333333] p-2'
+            >
+              About Us
+            </a>
+            <a
+              href='#servicesSection'
+              className='text-[#333333] border-b border-[#333333] p-2'
+            >
+              
+              Services
+            </a> */}
+            <a href='/contactus' className='text-[#333333] p-2'>
+            Contact Us
+          </a>
           </nav>
         </div>
       </div>

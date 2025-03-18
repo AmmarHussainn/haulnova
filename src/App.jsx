@@ -5,6 +5,7 @@ import PrivateRoute from "./components/PrivateRoute"; // Import it
 const routes = [
   { path: "/", component: lazy(() => import("./screens/public/home")) },
   { path: "/login", component: lazy(() => import("./components/login")) },
+  {path:'/contactus', component: lazy(() => import("./screens/public/contactus"))},
 
   // PRIVATE ROUTE
   { path: "/dashboard", component: lazy(() => import("./screens/private/dashboard")), private: true },

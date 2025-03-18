@@ -3,7 +3,7 @@ import { FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram } from 'react-icons/f
 
 const Footer = () => {
   return (
-    <footer className='bg-gray-800 text-white py-10 px-6 lg:px-32'>
+    <footer className='bg-gray-800 text-[#ffffff] py-10 px-6 lg:px-32'>
       <div className='max-w-7xl mx-auto grid md:grid-cols-3 gap-8 text-center md:text-left'>
         {/* Company Info */}
         <div>
@@ -17,10 +17,8 @@ const Footer = () => {
         <div>
           <h4 className='text-xl font-semibold mb-4'>Quick Links</h4>
           <ul className='space-y-2 text-gray-400'>
-            <li><a href='/' className='hover:text-white transition'>Home</a></li>
-            <li><a href='/about' className='hover:text-white transition'>About Us</a></li>
-            <li><a href='/services' className='hover:text-white transition'>Services</a></li>
-            <li><a href='/contact' className='hover:text-white transition'>Contact</a></li>
+            <li><a href='/' className='hover:text-[#ffffff] transition'>Home</a></li>
+           <li><a href='/contactus' className='hover:text-[#ffffff] transition'>Contact</a></li>
           </ul>
         </div>
 
@@ -33,10 +31,10 @@ const Footer = () => {
           
           {/* Social Media Icons */}
           <div className='flex justify-center md:justify-start space-x-4 mt-4'>
-            <a href='#' className='text-gray-400 hover:text-white transition'><FaFacebookF size={20} /></a>
-            <a href='#' className='text-gray-400 hover:text-white transition'><FaTwitter size={20} /></a>
-            <a href='#' className='text-gray-400 hover:text-white transition'><FaLinkedinIn size={20} /></a>
-            <a href='#' className='text-gray-400 hover:text-white transition'><FaInstagram size={20} /></a>
+            <a href='#' className='text-gray-400 hover:text-[#ffffff] transition'><FaFacebookF size={20} /></a>
+            <a href='#' className='text-gray-400 hover:text-[#ffffff] transition'><FaTwitter size={20} /></a>
+            <a href='#' className='text-gray-400 hover:text-[#ffffff] transition'><FaLinkedinIn size={20} /></a>
+            <a href='#' className='text-gray-400 hover:text-[#ffffff] transition'><FaInstagram size={20} /></a>
           </div>
         </div>
       </div>
