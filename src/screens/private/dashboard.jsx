@@ -5,16 +5,16 @@ import {
   ArrowLeftIcon, // For Back button
   ArrowRightOnRectangleIcon, // For Logout button
   CheckIcon, // For Mark as Read button
-  StarIcon, // For Favorite button
+  StarIcon, // For Favourite button
   EyeIcon, // For Unread filter
   EyeSlashIcon, // For Read filter
-  HeartIcon, // For Favorites filter
+  HeartIcon, // For Favourites filter
 } from '@heroicons/react/24/solid'; // Updated import path for v2
 
 const Dashboard = () => {
   const [calls, setCalls] = useState([]);
   const [selectedCall, setSelectedCall] = useState(null);
-  const [filter, setFilter] = useState('unread'); // "all", "read", "unread", "favorite"
+  const [filter, setFilter] = useState('unread'); // "all", "read", "unread", "favourite"
   const location = useLocation();
   const navigate = useNavigate();
   const { callType } = location.state || { callType: 'successful' };
@@ -51,19 +51,19 @@ const Dashboard = () => {
     }
   };
 
-  const markAsFavorite = async (callId) => {
+  const markAsFavourite = async (callId) => {
     try {
       await axios.post(
         `https://trucking-startup.onrender.com/api/call/markFavourite/${callId}`
       );
       setCalls((prevCalls) =>
         prevCalls.map((call) =>
-          call.id === callId ? { ...call, favorite: true } : call
+          call.id === callId ? { ...call, favourite: true } : call
         )
       );
-      console.log('Call marked as favorite:', callId);
+      console.log('Call marked as favourite:', callId);
     } catch (error) {
-      console.error('Error marking call as favorite:', error);
+      console.error('Error marking call as favourite:', error);
     }
   };
 
@@ -83,7 +83,7 @@ const Dashboard = () => {
   const filteredCalls = sortedCalls.filter((call) => {
     if (filter === 'read') return call.read;
     if (filter === 'unread') return !call.read;
-    if (filter === 'favorite') return call.favorite;
+    if (filter === 'favourite') return call.favourite;
     return true; // "all"
   });
 
@@ -147,13 +147,13 @@ const Dashboard = () => {
           </button>
           <button
             className={`px-4 cursor-pointer py-2 rounded-md flex items-center ${
-              filter === 'favorite'
+              filter === 'favourite'
                 ? 'bg-[#f39c12] text-white'
                 : 'bg-[#ecf0f1] text-[#2c3e50]'
             }`}
-            onClick={() => setFilter('favorite')}
+            onClick={() => setFilter('favourite')}
           >
-            <HeartIcon className='w-5 h-5 mr-2' /> Favorites
+            <HeartIcon className='w-5 h-5 mr-2' /> Favourites
           </button>
           <button
             className='px-4 py-2 rounded-md bg-[#2c3e50] text-white hover:bg-[#34495e] transition flex items-center'
@@ -193,17 +193,17 @@ const Dashboard = () => {
                       <td className='p-4'>
                         <button
                           className={`px-4 py-2 rounded-md flex items-center ${
-                            call.favorite
+                            call.favourite
                               ? 'bg-[#f39c12] text-white'
                               : 'bg-[#ecf0f1] hover:bg-white text-[#2c3e50] cursor-pointer'
                           }`}
                           onClick={(e) => {
                             e.stopPropagation();
-                            markAsFavorite(call.id);
+                            markAsFavourite(call.id);
                           }}
                         >
                           <StarIcon className='w-5 h-5 mr-2' />
-                          {call.favorite ? 'Favorited' : 'Mark as Favorite'}
+                          {call.favourite ? 'Favourited' : 'Mark as Favourite'}
                         </button>
                       </td>
                     </tr>

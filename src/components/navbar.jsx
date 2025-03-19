@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
-import { faTimes, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faBars, faChevronDown, faPhone } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Images from '../assets/Images';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isServicesOpen, setServicesOpen] = useState(false); // State for Services dropdown
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const toggleServicesDropdown = () => {
+    setServicesOpen(!isServicesOpen);
   };
 
   return (
@@ -32,12 +37,47 @@ const Navbar = () => {
         </button>
 
         {/* Desktop Navigation */}
-        <div className='hidden lg:flex space-x-8'>
+        <div className='hidden lg:flex space-x-8 items-center'>
           <a href='/' className='text-gray-700  transition duration-300'>
             Home
           </a>
+          {/* Services Dropdown */}
+          <div className='relative'>
+            <button
+              onClick={toggleServicesDropdown}
+              className='text-gray-700  transition duration-300 flex items-center'
+            >
+              Services <FontAwesomeIcon icon={faChevronDown} className='ml-2 text-sm' />
+            </button>
+            {isServicesOpen && (
+              <div className='absolute top-10 left-0 bg-white shadow-lg rounded-lg py-2 w-48'>
+                <a
+                  href='/dispatch-for-trucking-companies'
+                  className='block px-4 py-2 text-gray-700 hover:bg-gray-100'
+                >
+                  Dispatch for Trucking Companies
+                </a>
+                <a
+                  href='/dispatch-for-owner-operators'
+                  className='block px-4 py-2 text-gray-700 hover:bg-gray-100'
+                >
+                  Dispatch for Owner Operators
+                </a>
+              </div>
+            )}
+          </div>
+          <a href='/pricing' className='text-gray-700  transition duration-300'>
+            Pricing
+          </a>
           <a href='/contactus' className='text-gray-700  transition duration-300'>
             Contact Us
+          </a>
+          {/* Phone Number */}
+          <a
+            href='tel:602-529-6927'
+            className='text-[#ffffff]  bg-[#ff6900] p-2 border rounded-lg transition duration-300 flex items-center'
+          >
+            (602) 529-6927
           </a>
         </div>
       </div>
@@ -63,6 +103,40 @@ const Navbar = () => {
             >
               Home
             </a>
+            {/* Mobile Services Dropdown */}
+            <div className='relative'>
+              <button
+                onClick={toggleServicesDropdown}
+                className='text-gray-700 text-lg py-3 border-b border-gray-200  transition duration-300 flex items-center justify-between w-full'
+              >
+                Services <FontAwesomeIcon icon={faChevronDown} className='text-sm' />
+              </button>
+              {isServicesOpen && (
+                <div className='pl-4'>
+                  <a
+                    href='/dispatch-for-trucking-companies'
+                    onClick={toggleMobileMenu}
+                    className='block py-2 mt-4 text-gray-700 '
+                  >
+                    Dispatch for Trucking Companies
+                  </a>
+                  <a
+                    href='/dispatch-for-owner-operators'
+                    onClick={toggleMobileMenu}
+                    className='block py-2 text-gray-700 '
+                  >
+                    Dispatch for Owner Operators
+                  </a>
+                </div>
+              )}
+            </div>
+            <a
+              href='/pricing'
+              onClick={toggleMobileMenu}
+              className='text-gray-700 text-lg py-3 border-b border-gray-200  transition duration-300'
+            >
+              Pricing
+            </a>
             <a
               href='/contactus'
               onClick={toggleMobileMenu}
@@ -70,6 +144,13 @@ const Navbar = () => {
             >
               Contact Us
             </a>
+            {/* Phone Number in Mobile Menu */}
+            <a
+            href='tel:602-529-6927'
+            className='text-[#ffffff]  bg-[#ff6900] p-2 border rounded-lg transition duration-300 flex items-center'
+          >
+            (602) 529-6927
+          </a>
           </nav>
         </div>
       </div>

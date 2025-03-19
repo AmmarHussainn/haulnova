@@ -5,6 +5,7 @@ const routes = [
   { path: "/", component: lazy(() => import("./screens/public/home")) },
   { path: "/login", component: lazy(() => import("./components/login")) },
   {path:'/contactus', component: lazy(() => import("./screens/public/contactus"))},
+  {path:'/pricing', component: lazy(() => import("./screens/public/pricing"))},
 
   // PRIVATE ROUTE
   {path: 'selection', component: lazy(() => import("./screens/private/selectionscreen"))},
