@@ -15,36 +15,7 @@ const ContactUs = () => {
         Have questions? Reach out to us or book a call directly!
       </p>
 
-      {/* Contact Info Section */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Phone */}
-        <div className="flex items-center gap-4 p-4 bg-white shadow-md rounded-lg">
-          <Phone className="text-orange-500" />
-          <div>
-            <p className="text-gray-600">Call Us</p>
-            <p className="font-bold text-lg">(602) 529-6927</p>
-          </div>
-        </div>
-
-        {/* Email */}
-        <div className="flex items-center gap-4 p-4  bg-white shadow-md rounded-lg">
-          <Mail className="text-orange-500" />
-          <div>
-            <p className="text-gray-600">Email Us</p>
-            <p className="font-bold">dispatch@haulnova.com</p>
-          </div>
-        </div>
-
-        {/* Location */}
-        {/* <div className="flex items-center gap-4 p-4 bg-white shadow-md rounded-lg">
-          <MapPin className="text-orange-500" />
-          <div>
-            <p className="text-gray-600">Visit Us</p>
-            <p className="font-bold text-lg">123 Main St, Chicago, IL</p>
-          </div>
-        </div> */}
-      </div>
-
+     
       {/* Calendly Section */}
       <div className="mt-12">
         <h3 className="text-2xl font-semibold flex items-center gap-2">
@@ -65,6 +36,30 @@ const ContactUs = () => {
 
         </div>
       </div>
+
+       {/* Contact Info Section */}
+       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Phone */}
+        <div className="flex items-center gap-4 p-4 bg-white shadow-md rounded-lg">
+          <Phone className="text-orange-500" />
+          <div>
+            <p className="text-gray-600">Call Us</p>
+            <p className="font-bold text-lg">(602) 529-6927</p>
+          </div>
+        </div>
+
+        {/* Email */}
+        <div className="flex items-center gap-4 p-4  bg-white shadow-md rounded-lg">
+          <Mail className="text-orange-500" />
+          <div>
+            <p className="text-gray-600">Email Us</p>
+            <p className="font-bold">dispatch@haulnova.com</p>
+          </div>
+        </div>
+
+       
+      </div>
+
     </div>
     <Footer/>
     </>
