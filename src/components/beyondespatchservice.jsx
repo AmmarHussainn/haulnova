@@ -9,13 +9,13 @@ const BeyondDispatchServices = () => {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+    <div className=" mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
     
     <div>
         <img
           src= {Images.beyoondespatch}
           alt="Invoice on Tablet"
-          className="rounded-lg shadow-md"
+          className=" shadow-md"
         />
       </div>
       {/* Left: Text Content */}

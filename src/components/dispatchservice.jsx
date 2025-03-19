@@ -12,7 +12,7 @@ const DispatchService = () => {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+    <div className=" mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
       {/* Left: Image */}
       <div>
         <img

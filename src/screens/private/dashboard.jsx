@@ -5,10 +5,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 const Dashboard = () => {
   const [calls, setCalls] = useState([]);
   const [selectedCall, setSelectedCall] = useState(null);
-  const [filter, setFilter] = useState("all"); // "all", "read", "unread"
+  const [filter, setFilter] = useState("unread"); // "all", "read", "unread"
   const location = useLocation();
   const navigate = useNavigate();
-  const { callType } = location.state || { callType: 'successful' }; // Default to successful calls
+  const { callType } = location.state || { callType: 'successful' }; 
 
   useEffect(() => {
     fetchCalls();
@@ -21,7 +21,7 @@ const Dashboard = () => {
           ? 'https://trucking-startup.onrender.com/api/call/allCalls'
           : 'https://trucking-startup.onrender.com/api/call/allFalseCalls';
       const response = await axios.get(endpoint);
-      setCalls(response.data || []); // Ensure calls is always an array
+      setCalls(response.data || []); 
     } catch (error) {
       console.error("Error fetching calls:", error);
     }
@@ -39,11 +39,17 @@ const Dashboard = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken'); // Clear the auth token
-    navigate('/login'); // Redirect to login page
+    localStorage.removeItem('authToken'); 
+    navigate('/login');
   };
 
-  const filteredCalls = calls.filter((call) => {
+  const handleGoBack = () => {
+    navigate(-1); 
+  };
+
+  const sortedCalls = [...calls].sort((a, b) => (a.read === b.read ? 0 : a.read ? 1 : -1));
+
+  const filteredCalls = sortedCalls.filter((call) => {
     if (filter === "read") return call.read;
     if (filter === "unread") return !call.read;
     return true; // "all"
@@ -64,6 +70,14 @@ const Dashboard = () => {
         <h2 className="text-3xl font-bold text-[#2c3e50] text-center mb-6">
           {callType === 'successful' ? 'Successful Calls' : 'Unsuccessful Calls'}
         </h2>
+
+        {/* Back Button */}
+        <button
+          className="px-4 py-2 rounded-md cursor-pointer bg-[#2c3e50] text-white hover:bg-[#34495e] transition mb-6"
+          onClick={handleGoBack}
+        >
+          Back
+        </button>
 
         {/* Filter Buttons */}
         <div className="flex justify-end space-x-4 mb-6">
