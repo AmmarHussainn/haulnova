@@ -8,6 +8,8 @@ const Images = {
     herovideo :  '/images/herovideo.mp4',
     truck1 : '/images/truck1.png',
     truck2 : '/images/truck2.png',
+    truckrow : '/images/truckrow.png',
+    customersupportman : '/images/customersupportman.png',
     
 }   
 

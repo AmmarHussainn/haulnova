@@ -26,8 +26,7 @@ const Home = () => {
       <BeyondDispatchServices />
       <PriceDispatchServices />
       <FAQSection />
-      {/* <AboutUs/>
-      <Services/> */}
+     
       <Footer />
     </div>
   );

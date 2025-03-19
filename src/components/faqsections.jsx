@@ -27,51 +27,61 @@ const FAQSection = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
-      {/* FAQ Title */}
-      <h2 className="text-3xl font-bold">FAQ</h2>
-      <p className="text-gray-600">Our team brings together peerless professionals.</p>
+  {/* FAQ Title */}
+  <h2 className="text-3xl font-bold font-bebas">FAQ</h2>
+  <p className="text-gray-600 font-montserrat">
+    Our team brings together peerless professionals.
+  </p>
 
-      {/* FAQ List */}
-      <div className="mt-6 space-y-4">
-        {faqs.map((faq, index) => (
-          <div 
-            key={index} 
-            className={`border  shadow-md transition-all duration-300 ${openIndex === index ? "border-orange-500" : "border-gray-200"}`}
-          >
-            <button
-              onClick={() => toggleFAQ(index)}
-              className={`flex justify-between items-center cursor-pointer w-full p-4 text-left ${openIndex === index ? "bg-orange-100" : "bg-white"} transition`}
+  {/* FAQ List */}
+  <div className="mt-6 space-y-4">
+    {faqs.map((faq, index) => (
+      <div
+        key={index}
+        className={`border shadow-md transition-all duration-300 ${
+          openIndex === index ? "border-orange-500" : "border-gray-200"
+        }`}
+      >
+        <button
+          onClick={() => toggleFAQ(index)}
+          className={`flex justify-between items-center cursor-pointer w-full p-4 text-left ${
+            openIndex === index ? "bg-orange-100" : "bg-white"
+          } transition`}
+        >
+          <span className="font-medium font-Montserrat">{faq.question}</span>
+          {openIndex === index ? (
+            <Minus className="text-orange-500" />
+          ) : (
+            <Plus className="text-gray-500" />
+          )}
+        </button>
+        <AnimatePresence>
+          {openIndex === index && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden"
             >
-              <span className="font-medium">{faq.question}</span>
-              {openIndex === index ? <Minus className="text-orange-500" /> : <Plus className="text-gray-500" />}
-            </button>
-            <AnimatePresence>
-              {openIndex === index && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="overflow-hidden"
-                >
-                  <p className="p-4 text-gray-600">{faq.answer}</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        ))}
+              <p className="p-4 text-gray-600 font-montserrat">{faq.answer}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
+    ))}
+  </div>
 
-      {/* Contact Section */}
-      <div className="mt-10 flex items-center gap-3 p-4 bg-white shadow-md rounded-lg">
-        <div className="p-3 bg-orange-100 rounded-full">
-          <Phone className="text-orange-500" />
-        </div>
-        <div>
-          <p className="text-gray-600">Need help? Call us</p>
-          <p className="font-bold text-lg">(602) 529-6927</p>
-        </div>
-      </div>
+  {/* Contact Section */}
+  <div className="mt-10 flex items-center gap-3 p-4 bg-white shadow-md rounded-lg">
+    <div className="p-3 bg-orange-100 rounded-full">
+      <Phone className="text-orange-500" />
     </div>
+    <div>
+      <p className="text-gray-600 font-montserrat">Need help? Call us</p>
+      <p className="font-bold text-lg font-bebas">(602) 529-6927</p>
+    </div>
+  </div>
+</div>
   );
 };
 

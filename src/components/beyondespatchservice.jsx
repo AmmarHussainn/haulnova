@@ -20,8 +20,8 @@ const BeyondDispatchServices = () => {
       </div>
       {/* Left: Text Content */}
       <div>
-        <h2 className="text-3xl font-bold">Beyond dispatch services</h2>
-        <p className="text-gray-600 mt-4">
+        <h2 className="text-4xl  font-Montserrat font-bold">Beyond dispatch services</h2>
+        <p className="text-gray-600 mt-4 font-Montserrat">
           We go beyond dispatch for trucks by providing comprehensive administrative 
           support to make your job easier and save you money. With Haul Nova Dispatch, 
           you can leave all your freight operations to us.
@@ -34,7 +34,7 @@ const BeyondDispatchServices = () => {
               {pair.map((service, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <Check className="text-orange-500" />
-                  <span className="font-semibold">{service}</span>
+                  <span className="font-medium font-bebas text-xl">{service}</span>
                 </div>
               ))}
             </div>
@@ -42,7 +42,7 @@ const BeyondDispatchServices = () => {
         </div>
 
         {/* CTA Button */}
-        <button className="mt-6 border border-black px-6 py-3 rounded-md font-semibold flex items-center gap-2 hover:bg-gray-100">
+        <button className="mt-6 border font-Montserrat border-black px-6 py-3 rounded-md font-semibold flex items-center gap-2 hover:bg-gray-100">
           MORE ABOUT SOLUTIONS →
         </button>
       </div>

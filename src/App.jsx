@@ -6,7 +6,8 @@ const routes = [
   { path: "/login", component: lazy(() => import("./components/login")) },
   {path:'/contactus', component: lazy(() => import("./screens/public/contactus"))},
   {path:'/pricing', component: lazy(() => import("./screens/public/pricing"))},
-
+  {path:'/dispatch-for-trucking-companies', component: lazy(() => import("./screens/public/dispatchfortruckingcompanies"))},
+  {path : '/dispatch-for-owner-operators' , component: lazy(()=> import("./screens/public/dispatchservicesforowneroperators"))},
   // PRIVATE ROUTE
   {path: 'selection', component: lazy(() => import("./screens/private/selectionscreen"))},
   { path: "/dashboard", component: lazy(() => import("./screens/private/dashboard")), private: true },

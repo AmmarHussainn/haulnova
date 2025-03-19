@@ -4,7 +4,8 @@
     theme: {
       extend: {
         fontFamily: {
-          bebas: ['"Bebas Neue"', 'cursive'], // Add 'bebas' key
+          bebas: ["'Bebas Neue'", "sans-serif"],
+          dmSans: ["'DM Sans'", "sans-serif"],
         },
       },
     },

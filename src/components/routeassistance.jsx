@@ -14,8 +14,8 @@ const RouteAssistance = () => {
      
       {/* Right: Text Content */}
       <div>
-        <h2 className="text-3xl font-bold ">Route assistance for every mile</h2>
-        <p className="text-gray-600 mt-4">
+        <h2 className="text-4xl font-bold font-bebas ">Route assistance for every mile</h2>
+        <p className="text-gray-600 mt-4 font-Montserrat">
           With a keen focus on communication and transparency, we provide real-time updates and personalized support, giving you and your drivers peace of mind every step of the way. Along with our main responsibilities, we make sure to:
         </p>
 
@@ -24,7 +24,7 @@ const RouteAssistance = () => {
           {points.map((item, index) => (
             <div key={index} className="flex items-center  gap-2">
               {item.icon}
-              <span className="font-semibold">{item.text}</span>
+              <span className="font-semibold font-Montserrat">{item.text}</span>
             </div>
           ))}
         </div>

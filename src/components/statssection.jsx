@@ -19,8 +19,8 @@ const StatsSection = () => {
               <div className="bg-[#ff6900]  p-4 rounded-full">
                 {stat.icon}
               </div>
-              <h3 className="text-3xl font-bold mt-6 text-gray-800">{stat.value}</h3>
-              <p className="text-lg text-gray-600 mt-2">{stat.label}</p>
+              <h3 className="text-3xl font-bold mt-6 font-bebas text-gray-800">{stat.value}</h3>
+              <p className="text-lg text-gray-600 font-Montserrat mt-2">{stat.label}</p>
             </div>
           ))}
         </div>

@@ -22,10 +22,11 @@ const HeroSection = () => {
       {/* Content Section */}
       <div className="relative z-10 flex flex-col justify-center items-start h-full px-6 md:px-12 text-white">
         <div className="lg:w-1/2 w-full text-center lg:text-left py-10">
-          <h1 className="text-4xl font-libre font-semibold mb-4">
+       
+          <h1 className="text-4xl font-bebas font-semibold mb-4">
             Reliable Truck Dispatching Services for Owner-Operators & Fleet Owners
           </h1>
-          <p className="text-lg font-libre">
+          <p className="text-lg font-Montserrat ">
             Haul Nova provides expert truck dispatching services, helping
             owner-operators and fleet owners maximize profits with efficient
             load booking, route optimization, and 24/7 support. Get top-paying
