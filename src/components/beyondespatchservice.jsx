@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import Images from "../assets/Images";
+import { Link } from "react-router-dom";
 
 const BeyondDispatchServices = () => {
   const services = [
@@ -42,9 +43,11 @@ const BeyondDispatchServices = () => {
         </div>
 
         {/* CTA Button */}
-        <button className="mt-6 border font-Montserrat border-black px-6 py-3 rounded-md font-semibold flex items-center gap-2 hover:bg-gray-100">
+        <Link to="/dispatch-for-trucking-companies" className='inline-block'>
+        <button  className="mt-6 px-6 font-Montserrat py-3 border cursor-pointer border-black rounded-lg font-semibold flex items-center gap-2 hover:bg-gray-100 transition">
           MORE ABOUT SOLUTIONS →
         </button>
+        </Link>
       </div>
 
       {/* Right: Image */}

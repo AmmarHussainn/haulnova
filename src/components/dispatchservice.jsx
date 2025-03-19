@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import Images from "../assets/Images";
+import { Link } from "react-router-dom";
 
 const DispatchService = () => {
   const checklist = [
@@ -40,9 +41,11 @@ const DispatchService = () => {
         </div>
 
         {/* Button */}
-        <button className="mt-6 px-6 font-Montserrat py-3 border border-black rounded-lg font-semibold flex items-center gap-2 hover:bg-gray-100 transition">
+        <Link to="/dispatch-for-trucking-companies" className='inline-block'>
+        <button  className="mt-6 px-6 font-Montserrat py-3 border cursor-pointer border-black rounded-lg font-semibold flex items-center gap-2 hover:bg-gray-100 transition">
           LEARN MORE ABOUT US →
         </button>
+        </Link>
       </div>
     </div>
   );
