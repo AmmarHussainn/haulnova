@@ -12,6 +12,12 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/solid';
 
+const LoadingSpinner = () => (
+  <div className="flex justify-center items-center">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+  </div>
+);
+
 const Dashboard = () => {
   const [calls, setCalls] = useState([]);
   const [selectedCall, setSelectedCall] = useState(null);
@@ -19,6 +25,7 @@ const Dashboard = () => {
   const [searchPhoneNumber, setSearchPhoneNumber] = useState('');
   const [searchResult, setSearchResult] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // New state for loading
   const location = useLocation();
   const navigate = useNavigate();
   const { callType } = location.state || { callType: 'successful' };
@@ -82,6 +89,7 @@ const Dashboard = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Set loading to true when search starts
     try {
       const response = await axios.post(
         `https://trucking-startup.onrender.com/api/call/mcAndRecording/${searchPhoneNumber}`
@@ -91,6 +99,8 @@ const Dashboard = () => {
     } catch (error) {
       console.log('Error fetching search result:', error);
       alert('Failed to fetch data for the provided phone number.');
+    } finally {
+      setIsLoading(false); // Set loading to false when search ends
     }
   };
 
@@ -148,9 +158,10 @@ const Dashboard = () => {
           />
           <button
             type="submit"
-            className="ml-2 px-4 py-2 bg-[#3498db] cursor-pointer text-white rounded-md"
+            className="ml-2 px-4 py-2 bg-[#3498db] cursor-pointer text-white rounded-md flex items-center"
+            disabled={isLoading} // Disable the button when loading
           >
-            Search
+            {isLoading ? <LoadingSpinner /> : 'Search'}
           </button>
         </form>
 
