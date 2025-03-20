@@ -1,20 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { data, useLocation, useNavigate } from 'react-router-dom';
 import {
-  ArrowLeftIcon, // For Back button
-  ArrowRightOnRectangleIcon, // For Logout button
-  CheckIcon, // For Mark as Read button
-  StarIcon, // For Favourite button
-  EyeIcon, // For Unread filter
-  EyeSlashIcon, // For Read filter
-  HeartIcon, // For Favourites filter
-} from '@heroicons/react/24/solid'; // Updated import path for v2
+  ArrowLeftIcon,
+  ArrowRightOnRectangleIcon,
+  CheckIcon,
+  StarIcon,
+  EyeIcon,
+  EyeSlashIcon,
+  HeartIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/solid';
+import Modal from 'react-modal'; // Import the modal library
+
+// Set the root element for accessibility
+Modal.setAppElement('#root');
 
 const Dashboard = () => {
   const [calls, setCalls] = useState([]);
   const [selectedCall, setSelectedCall] = useState(null);
-  const [filter, setFilter] = useState('unread'); // "all", "read", "unread", "favourite"
+  const [filter, setFilter] = useState('unread');
+  const [searchPhoneNumber, setSearchPhoneNumber] = useState('');
+  const [searchResult, setSearchResult] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { callType } = location.state || { callType: 'successful' };
@@ -76,6 +84,26 @@ const Dashboard = () => {
     navigate('/selection');
   };
 
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.get(
+        `https://trucking-startup.onrender.com/api/call/mcAndRecording/${searchPhoneNumber}`
+      );
+      setSearchResult(response.data);
+      console.log(data,"phone")
+      setIsModalOpen(true);
+    } catch (error) {
+      console.log('Error fetching search result:', error);
+      alert('Failed to fetch data for the provided phone number.');
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSearchResult(null);
+  };
+
   const sortedCalls = [...calls].sort((a, b) =>
     a.read === b.read ? 0 : a.read ? 1 : -1
   );
@@ -113,8 +141,62 @@ const Dashboard = () => {
           <ArrowLeftIcon className='w-5 h-5 mr-2' /> Back
         </button>
 
+        {/* Search Form */}
+        {/* <form onSubmit={handleSearch} className="mb-6 w-full flex items-center justify-center  ">
+          <input
+            type="text"
+            value={searchPhoneNumber}
+            onChange={(e) => setSearchPhoneNumber(e.target.value)}
+            placeholder="Enter phone number (e.g., +17178751033)"
+            className="px-4 py-2 w-[70%] border rounded-md"
+            required
+          />
+          <button
+            type="submit"
+            className="ml-2 px-4 py-2 bg-[#3498db] text-white rounded-md "
+          >
+            Search
+          </button>
+        </form> */}
+
+        {/* Modal for Search Results */}
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={closeModal}
+          contentLabel="Search Result Modal"
+          className="modal"
+          overlayClassName="overlay"
+        >
+          <div className="p-4">
+            <button onClick={closeModal} className="float-right">
+              <XMarkIcon className="w-6 h-6" />
+            </button>
+            {searchResult ? (
+              <>
+                <p>
+                  <strong>MC Number:</strong> {searchResult.mcNumber}
+                </p>
+                <p>
+                  <strong>Mono Recording:</strong>{' '}
+                  <a
+                    href={searchResult.monoRecording}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Listen to Recording
+                  </a>
+                </p>
+              </>
+            ) : (
+              <p>No data found.</p>
+            )}
+          </div>
+        </Modal>
+
         {/* Filter Buttons */}
         <div className='flex justify-end space-x-4 mb-6'>
+
+          
           <button
             className={`px-4 cursor-pointer py-2 rounded-md flex items-center ${
               filter === 'all'

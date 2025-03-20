@@ -16,7 +16,7 @@ export default function PricingFormation() {
         {/* Number of Trucks */}
         <div className="bg-gray-50 p-8 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
           <h3 className="text-2xl font-bebas font-bold mb-4 text-gray-800">NUMBER OF TRUCKS</h3>
-          <p className="text-3xl font-bold text-[#ff6900] mb-4">3% - 5%</p>
+          <p className="text-3xl font-bold text-[#ff6900] mb-4">6% - 10%</p>
           <p className="text-gray-600 mb-6">
             Price varies depending on the number of trucks and the equipment type.
           </p>
