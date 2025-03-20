@@ -10,6 +10,9 @@ import {
   EyeSlashIcon,
   HeartIcon,
   XMarkIcon,
+  TrashIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from '@heroicons/react/24/solid';
 
 const LoadingSpinner = () => (
@@ -25,27 +28,38 @@ const Dashboard = () => {
   const [searchPhoneNumber, setSearchPhoneNumber] = useState('');
   const [searchResult, setSearchResult] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // New state for loading
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [callToDelete, setCallToDelete] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const location = useLocation();
   const navigate = useNavigate();
   const { callType } = location.state || { callType: 'successful' };
 
   useEffect(() => {
     fetchCalls();
-  }, [callType]);
+  }, [callType, currentPage]);
 
   const fetchCalls = async () => {
     try {
-      const endpoint =
-        callType === 'successful'
-          ? 'https://trucking-startup.onrender.com/api/call/allCalls'
-          : 'https://trucking-startup.onrender.com/api/call/allFalseCalls';
+      const endpoint = callType === 'successful'
+        ? `https://trucking-startup.onrender.com/api/call/true?page=${currentPage}&limit=20`
+        : `https://trucking-startup.onrender.com/api/call/false?page=${currentPage}&limit=20`;
       const response = await axios.get(endpoint);
-      setCalls(response.data || []);
+  
+      // Check if the response is an array
+      if (Array.isArray(response.data)) {
+        setCalls(response.data);
+        setTotalPages(Math.ceil(response.data.length / 20)); // Assuming 20 calls per page
+      } else {
+        console.error('Unexpected API response structure:', response.data);
+      }
     } catch (error) {
       console.error('Error fetching calls:', error);
     }
   };
+  
 
   const markAsRead = async (callId) => {
     try {
@@ -78,6 +92,19 @@ const Dashboard = () => {
     }
   };
 
+  const deleteCall = async (callId) => {
+    try {
+      await axios.post(
+        `https://trucking-startup.onrender.com/api/call/deleteCall/${callId}`
+      );
+      setCalls((prevCalls) => prevCalls.filter((call) => call.id !== callId));
+      setIsDeleteModalOpen(false);
+      setCallToDelete(null);
+    } catch (error) {
+      console.error('Error deleting call:', error);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     navigate('/login');
@@ -89,7 +116,7 @@ const Dashboard = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    setIsLoading(true); // Set loading to true when search starts
+    setIsLoading(true);
     try {
       const response = await axios.post(
         `https://trucking-startup.onrender.com/api/call/mcAndRecording/${searchPhoneNumber}`
@@ -100,7 +127,7 @@ const Dashboard = () => {
       console.log('Error fetching search result:', error);
       alert('Failed to fetch data for the provided phone number.');
     } finally {
-      setIsLoading(false); // Set loading to false when search ends
+      setIsLoading(false);
     }
   };
 
@@ -109,16 +136,31 @@ const Dashboard = () => {
     setSearchResult(null);
   };
 
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setCallToDelete(null);
+  };
+
+  const confirmDelete = () => {
+    if (callToDelete) {
+      deleteCall(callToDelete);
+    }
+  };
+
   const sortedCalls = [...calls].sort((a, b) =>
     a.read === b.read ? 0 : a.read ? 1 : -1
   );
 
   const filteredCalls = sortedCalls.filter((call) => {
+    console.log('Filter:', filter, 'Call:', call); // Log the filter condition and call data
     if (filter === 'read') return call.read;
     if (filter === 'unread') return !call.read;
     if (filter === 'favourite') return call.favourite;
-    return true; // "all"
+    return true;
   });
+
+  console.log('Filtered Calls:', filteredCalls); // Log the filtered calls
+  console.log('All Calls:', calls); // Log all calls
 
   const renderStructuredData = (data) => {
     if (!data) return null;
@@ -138,7 +180,6 @@ const Dashboard = () => {
             : 'Unsuccessful Calls'}
         </h2>
 
-        {/* Back Button */}
         <button
           className='px-4 py-2 rounded-md cursor-pointer bg-[#2c3e50] text-white hover:bg-[#34495e] transition mb-6 flex items-center'
           onClick={handleGoBack}
@@ -146,7 +187,6 @@ const Dashboard = () => {
           <ArrowLeftIcon className='w-5 h-5 mr-2' /> Back
         </button>
 
-        {/* Search Form */}
         <form onSubmit={handleSearch} className="mb-6 w-full flex items-center justify-center">
           <input
             type="text"
@@ -159,13 +199,12 @@ const Dashboard = () => {
           <button
             type="submit"
             className="ml-2 px-4 py-2 bg-[#3498db] cursor-pointer text-white rounded-md flex items-center"
-            disabled={isLoading} // Disable the button when loading
+            disabled={isLoading}
           >
             {isLoading ? <LoadingSpinner /> : 'Search'}
           </button>
         </form>
 
-        {/* Tailwind CSS Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6">
@@ -212,7 +251,39 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Filter Buttons */}
+        {isDeleteModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold">Confirm Delete</h3>
+                <button
+                  onClick={closeDeleteModal}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <XMarkIcon className="w-6 h-6 cursor-pointer" />
+                </button>
+              </div>
+              <div className="mb-4">
+                <p>Are you sure you want to delete this call?</p>
+              </div>
+              <div className="flex justify-end">
+                <button
+                  onClick={closeDeleteModal}
+                  className="px-4 py-2 bg-gray-500 cursor-pointer text-white rounded-md hover:bg-gray-600 mr-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  className="px-4 py-2 bg-red-500 cursor-pointer text-white rounded-md hover:bg-red-600"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className='flex justify-end space-x-4 mb-6'>
           <button
             className={`px-4 cursor-pointer py-2 rounded-md flex items-center ${
@@ -262,8 +333,7 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {/* Table */}
-        <div className='overflow-x-auto'>
+        <div className='overflow-x-auto mb-4'>
           <table className='w-full border-collapse'>
             <thead>
               <tr className='bg-[#3498db] text-white'>
@@ -289,7 +359,7 @@ const Dashboard = () => {
                       <td className='p-4'>{structuredData.Name || 'N/A'}</td>
                       <td className='p-4'>{structuredData.Email || 'N/A'}</td>
                       <td className='p-4'>{call.phoneNumber || 'N/A'}</td>
-                      <td className='p-4'>
+                      <td className='p-4 flex gap-4'>
                         <button
                           className={`px-4 py-2 rounded-md flex items-center ${
                             call.favourite
@@ -304,6 +374,17 @@ const Dashboard = () => {
                           <StarIcon className='w-5 h-5 mr-2' />
                           {call.favourite ? 'Favourited' : 'Mark as Favourite'}
                         </button>
+                        <button
+                          className='px-4 py-2 rounded-md bg-red-500 text-white hover:bg-red-600 flex items-center ml-2'
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCallToDelete(call.id);
+                            setIsDeleteModalOpen(true);
+                          }}
+                        >
+                          <TrashIcon className='w-5 h-5 mr-2' />
+                          Delete
+                        </button>
                       </td>
                     </tr>
                     {isSelected && (
@@ -317,12 +398,25 @@ const Dashboard = () => {
                                 'No summary available'}
                             </p>
                             {!call.read && (
-                              <button
-                                className='bg-[#3498db] text-white px-4 py-2 rounded-md hover:bg-[#2980b9] transition flex items-center'
-                                onClick={() => markAsRead(call.id)}
-                              >
-                                <CheckIcon className='w-5 h-5 mr-2' /> Mark as Read
-                              </button>
+                              <>
+                                <p>
+                                  <strong>Recording:</strong>{' '}
+                                  <a
+                                    href={call.monoRecording}
+                                    target='_blank'
+                                    rel='noopener noreferrer'
+                                    className='text-blue-500 hover:underline'
+                                  >
+                                    Listen to Recording
+                                  </a>
+                                </p>
+                                <button
+                                  className='bg-[#3498db] text-white px-4 py-2 rounded-md hover:bg-[#2980b9] transition flex items-center'
+                                  onClick={() => markAsRead(call.id)}
+                                >
+                                  <CheckIcon className='w-5 h-5 mr-2' /> Mark as Read
+                                </button>
+                              </>
                             )}
                           </div>
                         </td>
@@ -334,6 +428,27 @@ const Dashboard = () => {
             </tbody>
           </table>
         </div>
+
+        <div className='flex justify-center items-center space-x-4 mb-6'>
+          <button
+            className='px-4 py-2 cursor-pointer rounded-md bg-[#2c3e50] text-white hover:bg-[#34495e] transition flex items-center'
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            <ChevronLeftIcon className='w-5 h-5 mr-2' /> Previous
+          </button>
+          <span className='text-[#2c3e50]'>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className='px-4 py-2 cursor-pointer rounded-md bg-[#2c3e50] text-white hover:bg-[#34495e] transition flex items-center'
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
+            Next <ChevronRightIcon className='w-5 h-5 ml-2' />
+          </button>
+        </div>
+
       </div>
     </div>
   );
