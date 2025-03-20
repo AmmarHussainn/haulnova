@@ -22,16 +22,16 @@ export default function PricingFormation() {
           </p>
           <div className="text-sm text-gray-700 space-y-2">
             <p><strong>ALL TYPES</strong></p>
-            <p>1 truck: 10%</p>
-            <p>2-3 trucks: 8%</p>
-            <p>4-6 trucks: 7.4%</p>
-            <p>7-8 trucks: 7%</p>
-            <p>9-14 trucks: 6.4%</p>
-            <p>15+ trucks: 6%</p>
+            <p>1 truck: 5%</p>
+            <p>2-3 trucks: 4%</p>
+            <p>4-6 trucks: 3,7%</p>
+            <p>7-8 trucks: 3,5%</p>
+            <p>9-14 trucks: 3,2%</p>
+            <p>15+ trucks: 3%</p>
             <p className="mt-4"><strong>CARHAULERS</strong></p>
-            <p>1-5 trucks: 10%</p>
-            <p>6-10 trucks: 9%</p>
-            <p>11+ trucks: 8%</p>
+            <p>1-5 trucks: 5%</p>
+            <p>6-10 trucks: 4,5%</p>
+            <p>11+ trucks: 4%</p>
           </div>
         </div>
 
