@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { data, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   ArrowLeftIcon,
   ArrowRightOnRectangleIcon,
@@ -11,10 +11,6 @@ import {
   HeartIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
-import Modal from 'react-modal'; // Import the modal library
-
-// Set the root element for accessibility
-Modal.setAppElement('#root');
 
 const Dashboard = () => {
   const [calls, setCalls] = useState([]);
@@ -87,11 +83,10 @@ const Dashboard = () => {
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.get(
+      const response = await axios.post(
         `https://trucking-startup.onrender.com/api/call/mcAndRecording/${searchPhoneNumber}`
       );
       setSearchResult(response.data);
-      console.log(data,"phone")
       setIsModalOpen(true);
     } catch (error) {
       console.log('Error fetching search result:', error);
@@ -142,7 +137,7 @@ const Dashboard = () => {
         </button>
 
         {/* Search Form */}
-        {/* <form onSubmit={handleSearch} className="mb-6 w-full flex items-center justify-center  ">
+        <form onSubmit={handleSearch} className="mb-6 w-full flex items-center justify-center">
           <input
             type="text"
             value={searchPhoneNumber}
@@ -153,50 +148,61 @@ const Dashboard = () => {
           />
           <button
             type="submit"
-            className="ml-2 px-4 py-2 bg-[#3498db] text-white rounded-md "
+            className="ml-2 px-4 py-2 bg-[#3498db] cursor-pointer text-white rounded-md"
           >
             Search
           </button>
-        </form> */}
+        </form>
 
-        {/* Modal for Search Results */}
-        <Modal
-          isOpen={isModalOpen}
-          onRequestClose={closeModal}
-          contentLabel="Search Result Modal"
-          className="modal"
-          overlayClassName="overlay"
-        >
-          <div className="p-4">
-            <button onClick={closeModal} className="float-right">
-              <XMarkIcon className="w-6 h-6" />
-            </button>
-            {searchResult ? (
-              <>
-                <p>
-                  <strong>MC Number:</strong> {searchResult.mcNumber}
-                </p>
-                <p>
-                  <strong>Mono Recording:</strong>{' '}
-                  <a
-                    href={searchResult.monoRecording}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Listen to Recording
-                  </a>
-                </p>
-              </>
-            ) : (
-              <p>No data found.</p>
-            )}
+        {/* Tailwind CSS Modal */}
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold">Search Result</h3>
+                <button
+                  onClick={closeModal}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <XMarkIcon className="w-6 h-6 cursor-pointer" />
+                </button>
+              </div>
+              <div className="mb-4">
+                {searchResult ? (
+                  <>
+                    <p>
+                      <strong>MC Number:</strong> {searchResult.mcNumber}
+                    </p>
+                    <p>
+                      <strong>Mono Recording:</strong>{' '}
+                      <a
+                        href={searchResult.monoRecording}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >
+                        Listen to Recording
+                      </a>
+                    </p>
+                  </>
+                ) : (
+                  <p>No data found.</p>
+                )}
+              </div>
+              <div className="flex justify-end">
+                <button
+                  onClick={closeModal}
+                  className="px-4 py-2 bg-gray-500 cursor-pointer text-white rounded-md hover:bg-gray-600"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
-        </Modal>
+        )}
 
         {/* Filter Buttons */}
         <div className='flex justify-end space-x-4 mb-6'>
-
-          
           <button
             className={`px-4 cursor-pointer py-2 rounded-md flex items-center ${
               filter === 'all'
