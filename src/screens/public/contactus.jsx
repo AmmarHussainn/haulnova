@@ -6,7 +6,7 @@ const ContactUs = () => {
   return (
     <>
       <Navbar />
-      <div className="max-w-6xl mx-auto px-6 mt-20 py-12">
+      <div className="max-w-6xl bg-[#fff7f0]  mx-auto px-6 mt-20 py-12">
         {/* Title Section */}
         <h2 className="text-3xl font-bold text-center pt-10 font-bebas">Contact Us</h2>
         <p className="text-gray-600 text-center text-2xl mt-2 font-montserrat">
