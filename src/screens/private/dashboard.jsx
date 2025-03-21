@@ -412,7 +412,7 @@ const Dashboard = () => {
                           <StarIcon className='w-5 h-5 mr-2' />
                           {call.favourite ? 'Favourited' : 'Mark as Favourite'}
                         </button>
-                        <button
+                        {/* <button
                           className='px-4 py-2 rounded-md bg-red-500 text-white hover:bg-red-600 flex items-center ml-2'
                           onClick={(e) => {
                             e.stopPropagation();
@@ -422,7 +422,7 @@ const Dashboard = () => {
                         >
                           <TrashIcon className='w-5 h-5 mr-2' />
                           Delete
-                        </button>
+                        </button> */}
                       </td>
                     </tr>
                     {isSelected && (
