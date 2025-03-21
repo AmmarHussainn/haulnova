@@ -33,25 +33,27 @@ const Dashboard = () => {
   const [callToDelete, setCallToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
+  const [totalItems, setTotalItems] = useState(0); // State to store total items
   const location = useLocation();
   const navigate = useNavigate();
   const { callType } = location.state || { callType: 'successful' };
 
   useEffect(() => {
     fetchCalls();
-  }, [callType, currentPage]);
+    fetchTotalCount();
+  }, [callType, currentPage, itemsPerPage]);
 
   const fetchCalls = async () => {
     try {
       const endpoint = callType === 'successful'
-        ? `https://trucking-startup.onrender.com/api/call/true?page=${currentPage}&limit=20`
-        : `https://trucking-startup.onrender.com/api/call/false?page=${currentPage}&limit=20`;
+        ? `https://trucking-startup.onrender.com/api/call/true?page=${currentPage}&limit=${itemsPerPage}`
+        : `https://trucking-startup.onrender.com/api/call/false?page=${currentPage}&limit=${itemsPerPage}`;
       const response = await axios.get(endpoint);
-  
+
       // Check if the response is an array
       if (Array.isArray(response.data)) {
         setCalls(response.data);
-        setTotalPages(Math.ceil(response.data.length / 20)); // Assuming 20 calls per page
       } else {
         console.error('Unexpected API response structure:', response.data);
       }
@@ -59,7 +61,22 @@ const Dashboard = () => {
       console.error('Error fetching calls:', error);
     }
   };
-  
+
+  const fetchTotalCount = async () => {
+    try {
+      const countEndpoint = callType === 'successful'
+        ? 'https://trucking-startup.onrender.com/api/call/trueCount'
+        : 'https://trucking-startup.onrender.com/api/call/falseCount';
+      const response = await axios.get(countEndpoint);
+      const totalItemsFromResponse = response.data.count || 0;
+      setTotalItems(totalItemsFromResponse);
+      console.log('Total Items:', totalItemsFromResponse); // Debugging
+      setTotalPages(Math.ceil(totalItemsFromResponse / itemsPerPage));
+      console.log('Total Pages:', Math.ceil(totalItemsFromResponse / itemsPerPage)); // Debugging
+    } catch (error) {
+      console.error('Error fetching total count:', error);
+    }
+  };
 
   const markAsRead = async (callId) => {
     try {
@@ -152,15 +169,11 @@ const Dashboard = () => {
   );
 
   const filteredCalls = sortedCalls.filter((call) => {
-    console.log('Filter:', filter, 'Call:', call); // Log the filter condition and call data
     if (filter === 'read') return call.read;
     if (filter === 'unread') return !call.read;
     if (filter === 'favourite') return call.favourite;
     return true;
   });
-
-  console.log('Filtered Calls:', filteredCalls); // Log the filtered calls
-  console.log('All Calls:', calls); // Log all calls
 
   const renderStructuredData = (data) => {
     if (!data) return null;
@@ -284,7 +297,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        <div className='flex justify-end space-x-4 mb-6'>
+        <div className='flex md:flex-nowrap flex-wrap gap-2 md:gap-0 justify-center items-center md:justify-end space-x-4 mb-6'>
           <button
             className={`px-4 cursor-pointer py-2 rounded-md flex items-center ${
               filter === 'all'
@@ -331,6 +344,23 @@ const Dashboard = () => {
           >
             <ArrowRightOnRectangleIcon className='w-5 h-5 mr-2' /> Logout
           </button>
+        </div>
+
+        <div className='flex justify-between items-center mb-4'>
+          <label className='text-[#2c3e50]'>Items per page:</label>
+          <select
+            value={itemsPerPage}
+            onChange={(e) => {
+              setItemsPerPage(Number(e.target.value));
+              setCurrentPage(1); // Reset to first page when items per page changes
+            }}
+            className='px-4 py-2 rounded-md border'
+          >
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
         </div>
 
         <div className='overflow-x-auto mb-4'>
@@ -432,7 +462,10 @@ const Dashboard = () => {
         <div className='flex justify-center items-center space-x-4 mb-6'>
           <button
             className='px-4 py-2 cursor-pointer rounded-md bg-[#2c3e50] text-white hover:bg-[#34495e] transition flex items-center'
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            onClick={() => {
+              console.log('Previous Page:', currentPage - 1); // Debugging
+              setCurrentPage((prev) => Math.max(prev - 1, 1));
+            }}
             disabled={currentPage === 1}
           >
             <ChevronLeftIcon className='w-5 h-5 mr-2' /> Previous
@@ -442,7 +475,10 @@ const Dashboard = () => {
           </span>
           <button
             className='px-4 py-2 cursor-pointer rounded-md bg-[#2c3e50] text-white hover:bg-[#34495e] transition flex items-center'
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            onClick={() => {
+              console.log('Next Page:', currentPage + 1); // Debugging
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+            }}
             disabled={currentPage === totalPages}
           >
             Next <ChevronRightIcon className='w-5 h-5 ml-2' />
