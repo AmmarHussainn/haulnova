@@ -16,8 +16,8 @@ import {
 } from '@heroicons/react/24/solid';
 
 const LoadingSpinner = () => (
-  <div className="flex justify-center items-center">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+  <div className='flex justify-center items-center'>
+    <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900'></div>
   </div>
 );
 
@@ -46,9 +46,10 @@ const Dashboard = () => {
 
   const fetchCalls = async () => {
     try {
-      const endpoint = callType === 'successful'
-        ? `https://trucking-startup.onrender.com/api/call/true?page=${currentPage}&limit=${itemsPerPage}`
-        : `https://trucking-startup.onrender.com/api/call/false?page=${currentPage}&limit=${itemsPerPage}`;
+      const endpoint =
+        callType === 'successful'
+          ? `https://trucking-startup.onrender.com/api/call/true?page=${currentPage}&limit=${itemsPerPage}`
+          : `https://trucking-startup.onrender.com/api/call/false?page=${currentPage}&limit=${itemsPerPage}`;
       const response = await axios.get(endpoint);
 
       // Check if the response is an array
@@ -64,15 +65,19 @@ const Dashboard = () => {
 
   const fetchTotalCount = async () => {
     try {
-      const countEndpoint = callType === 'successful'
-        ? 'https://trucking-startup.onrender.com/api/call/trueCount'
-        : 'https://trucking-startup.onrender.com/api/call/falseCount';
+      const countEndpoint =
+        callType === 'successful'
+          ? 'https://trucking-startup.onrender.com/api/call/trueCount'
+          : 'https://trucking-startup.onrender.com/api/call/falseCount';
       const response = await axios.get(countEndpoint);
       const totalItemsFromResponse = response.data.count || 0;
       setTotalItems(totalItemsFromResponse);
       console.log('Total Items:', totalItemsFromResponse); // Debugging
       setTotalPages(Math.ceil(totalItemsFromResponse / itemsPerPage));
-      console.log('Total Pages:', Math.ceil(totalItemsFromResponse / itemsPerPage)); // Debugging
+      console.log(
+        'Total Pages:',
+        Math.ceil(totalItemsFromResponse / itemsPerPage)
+      ); // Debugging
     } catch (error) {
       console.error('Error fetching total count:', error);
     }
@@ -200,18 +205,21 @@ const Dashboard = () => {
           <ArrowLeftIcon className='w-5 h-5 mr-2' /> Back
         </button>
 
-        <form onSubmit={handleSearch} className="mb-6 w-full flex items-center justify-center">
+        <form
+          onSubmit={handleSearch}
+          className='mb-6 w-full flex items-center justify-center'
+        >
           <input
-            type="text"
+            type='text'
             value={searchPhoneNumber}
             onChange={(e) => setSearchPhoneNumber(e.target.value)}
-            placeholder="Enter phone number (e.g., +17178751033)"
-            className="px-4 py-2 w-[70%] border rounded-md"
+            placeholder='Enter phone number (e.g., +17178751033)'
+            className='px-4 py-2 w-[70%] border rounded-md'
             required
           />
           <button
-            type="submit"
-            className="ml-2 px-4 py-2 bg-[#3498db] cursor-pointer text-white rounded-md flex items-center"
+            type='submit'
+            className='ml-2 px-4 py-2 bg-[#3498db] cursor-pointer text-white rounded-md flex items-center'
             disabled={isLoading}
           >
             {isLoading ? <LoadingSpinner /> : 'Search'}
@@ -219,18 +227,18 @@ const Dashboard = () => {
         </form>
 
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold">Search Result</h3>
+          <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
+            <div className='bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6'>
+              <div className='flex justify-between items-center mb-4'>
+                <h3 className='text-xl font-bold'>Search Result</h3>
                 <button
                   onClick={closeModal}
-                  className="text-gray-500 hover:text-gray-700"
+                  className='text-gray-500 hover:text-gray-700'
                 >
-                  <XMarkIcon className="w-6 h-6 cursor-pointer" />
+                  <XMarkIcon className='w-6 h-6 cursor-pointer' />
                 </button>
               </div>
-              <div className="mb-4">
+              <div className='mb-4'>
                 {searchResult ? (
                   <>
                     <p>
@@ -240,9 +248,9 @@ const Dashboard = () => {
                       <strong>Mono Recording:</strong>{' '}
                       <a
                         href={searchResult.monoRecording}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 hover:underline"
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='text-blue-500 hover:underline'
                       >
                         Listen to Recording
                       </a>
@@ -252,10 +260,10 @@ const Dashboard = () => {
                   <p>No data found.</p>
                 )}
               </div>
-              <div className="flex justify-end">
+              <div className='flex justify-end'>
                 <button
                   onClick={closeModal}
-                  className="px-4 py-2 bg-gray-500 cursor-pointer text-white rounded-md hover:bg-gray-600"
+                  className='px-4 py-2 bg-gray-500 cursor-pointer text-white rounded-md hover:bg-gray-600'
                 >
                   Close
                 </button>
@@ -265,30 +273,30 @@ const Dashboard = () => {
         )}
 
         {isDeleteModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold">Confirm Delete</h3>
+          <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
+            <div className='bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6'>
+              <div className='flex justify-between items-center mb-4'>
+                <h3 className='text-xl font-bold'>Confirm Delete</h3>
                 <button
                   onClick={closeDeleteModal}
-                  className="text-gray-500 hover:text-gray-700"
+                  className='text-gray-500 hover:text-gray-700'
                 >
-                  <XMarkIcon className="w-6 h-6 cursor-pointer" />
+                  <XMarkIcon className='w-6 h-6 cursor-pointer' />
                 </button>
               </div>
-              <div className="mb-4">
+              <div className='mb-4'>
                 <p>Are you sure you want to delete this call?</p>
               </div>
-              <div className="flex justify-end">
+              <div className='flex justify-end'>
                 <button
                   onClick={closeDeleteModal}
-                  className="px-4 py-2 bg-gray-500 cursor-pointer text-white rounded-md hover:bg-gray-600 mr-2"
+                  className='px-4 py-2 bg-gray-500 cursor-pointer text-white rounded-md hover:bg-gray-600 mr-2'
                 >
                   Cancel
                 </button>
                 <button
                   onClick={confirmDelete}
-                  className="px-4 py-2 bg-red-500 cursor-pointer text-white rounded-md hover:bg-red-600"
+                  className='px-4 py-2 bg-red-500 cursor-pointer text-white rounded-md hover:bg-red-600'
                 >
                   Delete
                 </button>
@@ -427,9 +435,9 @@ const Dashboard = () => {
                               {call?.analysis?.summary ||
                                 'No summary available'}
                             </p>
-                            {!call.read && (
-                              <>
-                                <p>
+
+
+                            <p>
                                   <strong>Recording:</strong>{' '}
                                   <a
                                     href={call.monoRecording}
@@ -440,13 +448,16 @@ const Dashboard = () => {
                                     Listen to Recording
                                   </a>
                                 </p>
+                            {!call.read && (
+                             
                                 <button
                                   className='bg-[#3498db] text-white px-4 py-2 rounded-md hover:bg-[#2980b9] transition flex items-center'
                                   onClick={() => markAsRead(call.id)}
                                 >
-                                  <CheckIcon className='w-5 h-5 mr-2' /> Mark as Read
+                                  <CheckIcon className='w-5 h-5 mr-2' /> Mark as
+                                  Read
                                 </button>
-                              </>
+                              
                             )}
                           </div>
                         </td>
@@ -484,7 +495,6 @@ const Dashboard = () => {
             Next <ChevronRightIcon className='w-5 h-5 ml-2' />
           </button>
         </div>
-
       </div>
     </div>
   );
