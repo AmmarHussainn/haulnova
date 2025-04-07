@@ -42,6 +42,7 @@ const Dashboard = () => {
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
   const [selectedUsamaItem, setSelectedUsamaItem] = useState(null);
   const [expandedItems, setExpandedItems] = useState({});
+  const [successful, setSuccessful] = useState(false); // State for success status
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -159,7 +160,7 @@ const Dashboard = () => {
     try {
       const response = await axios.post(
         `https://trucking-startup.onrender.com/api/form/usama/${selectedUsamaItem._id}/update-description`,
-        { description }
+        { description, successful }
       );
 
       setCalls(prevCalls =>
@@ -167,10 +168,11 @@ const Dashboard = () => {
           call._id === selectedUsamaItem._id ? response.data : call
         )
       );
-
+      console.log('Description updated successfully:', response.data);
       setIsDescriptionModalOpen(false);
       setDescription('');
       setSelectedUsamaItem(null);
+      setSuccessful(false);
     } catch (error) {
       console.error('Error updating description:', error);
       alert('Failed to update description. Please try again.');
@@ -243,9 +245,9 @@ const Dashboard = () => {
           <p><strong>Legal Name:</strong> {data.legal_name || 'N/A'}</p>
           <p><strong>Physical Address:</strong> {data.physical_address || 'N/A'}</p>
           <p><strong>Phone:</strong> {data.phone || 'N/A'}</p>
-          {/* <p><strong>Status:</strong> {data.dialed ? 'Dialed' : 'Not Dialed'}</p> */}
-          {/* <p><strong>Unanswered Calls:</strong> {data.unansweredCallsCount || 0}</p> */}
-          {/* <p><strong>Total Dialed:</strong> {data.numberOfDialed || 0}</p> */}
+          {/* <p><strong>Status:</strong> {data.successful ? 'Successful' : 'Unsuccessful'}</p>
+          <p><strong>Unanswered Calls:</strong> {data.unansweredCallsCount || 0}</p>
+          <p><strong>Total Dialed:</strong> {data.numberOfDialed || 0}</p> */}
           <p><strong>Description:</strong> {data.description || 'No description available'}</p>
         </div>
       );
@@ -264,10 +266,10 @@ const Dashboard = () => {
 
   const sortedCalls = [...calls].sort((a, b) => {
     if (callType === 'usama') {
-      if (a.dialed === b.dialed) {
+      if (a.successful === b.successful) {
         return new Date(b.lastDialedAt || 0) - new Date(a.lastDialedAt || 0);
       }
-      return a.dialed ? 1 : -1;
+      return a.successful ? -1 : 1;
     } else {
       return a.read === b.read ? 0 : a.read ? 1 : -1;
     }
@@ -275,8 +277,8 @@ const Dashboard = () => {
 
   const filteredCalls = sortedCalls.filter((call) => {
     if (callType === 'usama') {
-      if (filter === 'dialed') return call.dialed;
-      if (filter === 'undialed') return !call.dialed;
+      if (filter === 'successful') return call.successful;
+      if (filter === 'unsuccessful') return !call.successful;
       return true;
     } else {
       if (filter === 'read') return call.read;
@@ -425,6 +427,7 @@ const Dashboard = () => {
                     setIsDescriptionModalOpen(false);
                     setSelectedUsamaItem(null);
                     setDescription('');
+                    setSuccessful(false); // Reset success status
                   }}
                   className='text-gray-500 hover:text-gray-700'
                 >
@@ -440,12 +443,24 @@ const Dashboard = () => {
                   placeholder='Enter description...'
                 />
               </div>
+              <div className='mb-4'>
+                <label className='block text-gray-700'>Success Status</label>
+                <select
+                  value={successful}
+                  onChange={(e) => setSuccessful(e.target.value === 'true')}
+                  className='w-full p-2 border rounded-md'
+                >
+                  <option value={false}>Unsuccessful</option>
+                  <option value={true}>Successful</option>
+                </select>
+              </div>
               <div className='flex justify-end'>
                 <button
                   onClick={() => {
                     setIsDescriptionModalOpen(false);
                     setSelectedUsamaItem(null);
                     setDescription('');
+                    setSuccessful(false); // Reset success status
                   }}
                   className='px-4 py-2 bg-gray-500 cursor-pointer text-white rounded-md hover:bg-gray-600 mr-2'
                 >
@@ -475,25 +490,25 @@ const Dashboard = () => {
               >
                 All
               </button>
-              {/* <button
-                className={`px-4 cursor-pointer py-2 rounded-md flex items-center ${
-                  filter === 'dialed'
-                    ? 'bg-[#3498db] text-white'
-                    : 'bg-[#ecf0f1] text-[#2c3e50]'
-                }`}
-                onClick={() => setFilter('dialed')}
-              >
-                <CheckIcon className='w-5 h-5 mr-2' /> Dialed
-              </button> */}
               <button
                 className={`px-4 cursor-pointer py-2 rounded-md flex items-center ${
-                  filter === 'undialed'
+                  filter === 'successful'
                     ? 'bg-[#3498db] text-white'
                     : 'bg-[#ecf0f1] text-[#2c3e50]'
                 }`}
-                onClick={() => setFilter('undialed')}
+                onClick={() => setFilter('successful')}
               >
-                <XMarkIcon className='w-5 h-5 mr-2' /> Not Dialed
+                <CheckIcon className='w-5 h-5 mr-2' /> Successful
+              </button>
+              <button
+                className={`px-4 cursor-pointer py-2 rounded-md flex items-center ${
+                  filter === 'unsuccessful'
+                    ? 'bg-[#3498db] text-white'
+                    : 'bg-[#ecf0f1] text-[#2c3e50]'
+                }`}
+                onClick={() => setFilter('unsuccessful')}
+              >
+                <XMarkIcon className='w-5 h-5 mr-2' /> Unsuccessful
               </button>
             </>
           ) : (
@@ -609,9 +624,9 @@ const Dashboard = () => {
                               <td className='p-4'>{call.mc_mx_ff_number || 'N/A'}</td>
                               <td className='p-4'>
                                 <span className={`px-2 py-1 rounded-full text-xs ${
-                                  call.dialed ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                                  call.successful ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                                 }`}>
-                                  {call.dialed ? 'Dialed' : 'Not Dialed'}
+                                  {call.successful ? 'Successful' : 'Unsuccessful'}
                                 </span>
                               </td>
                             </>
@@ -637,6 +652,7 @@ const Dashboard = () => {
                                   e.stopPropagation();
                                   setSelectedUsamaItem(call);
                                   setDescription(call.description || '');
+                                  setSuccessful(call.successful || false); // Set initial success status
                                   setIsDescriptionModalOpen(true);
                                 }}
                               >
