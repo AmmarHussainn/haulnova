@@ -14,6 +14,8 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   PencilIcon,
+  ChevronDownIcon,
+  ChevronUpIcon
 } from '@heroicons/react/24/solid';
 
 const LoadingSpinner = () => (
@@ -39,6 +41,7 @@ const Dashboard = () => {
   const [description, setDescription] = useState('');
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
   const [selectedUsamaItem, setSelectedUsamaItem] = useState(null);
+  const [expandedItems, setExpandedItems] = useState({});
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -49,7 +52,6 @@ const Dashboard = () => {
     if (callType !== 'usama') {
       fetchTotalCount();
     } else {
-      // For Usama's list, we'll get total from the main endpoint
       fetchUsamaTotalCount();
     }
   }, [callType, currentPage, itemsPerPage]);
@@ -92,19 +94,14 @@ const Dashboard = () => {
 
   const fetchUsamaTotalCount = async () => {
     try {
-      const response = await axios.get(
-        `https://trucking-startup.onrender.com/api/form/usama/undialed-count`
-      );
+      const response = await axios.get(`https://trucking-startup.onrender.com/api/form/usama/undialed-count`);
       const total = response.data.totalUndialed || 0;
       setTotalItems(total);
       setTotalPages(Math.ceil(total / itemsPerPage));
     } catch (error) {
       console.error('Error fetching Usama total count:', error);
-      // Fallback to using length of first page if count endpoint fails
       try {
-        const response = await axios.get(
-          `https://trucking-startup.onrender.com/api/form/usama/?page=1&limit=${itemsPerPage}`
-        );
+        const response = await axios.get(`https://trucking-startup.onrender.com/api/form/usama/?page=1&limit=${itemsPerPage}`);
         setTotalItems(response.data.length);
         setTotalPages(Math.ceil(response.data.length / itemsPerPage));
       } catch (fallbackError) {
@@ -151,7 +148,7 @@ const Dashboard = () => {
       setCalls((prevCalls) => prevCalls.filter((call) => call.id !== callId));
       setIsDeleteModalOpen(false);
       setCallToDelete(null);
-      fetchTotalCount(); // Refresh the count
+      fetchTotalCount();
     } catch (error) {
       console.error('Error deleting call:', error);
     }
@@ -164,14 +161,13 @@ const Dashboard = () => {
         `https://trucking-startup.onrender.com/api/form/usama/${selectedUsamaItem._id}/update-description`,
         { description }
       );
-  
-      // Update the specific call in the state with the updated data
+
       setCalls(prevCalls =>
         prevCalls.map(call =>
           call._id === selectedUsamaItem._id ? response.data : call
         )
       );
-  
+
       setIsDescriptionModalOpen(false);
       setDescription('');
       setSelectedUsamaItem(null);
@@ -182,7 +178,7 @@ const Dashboard = () => {
       setIsLoading(false);
     }
   };
-  
+
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     navigate('/login');
@@ -230,50 +226,33 @@ const Dashboard = () => {
     }
   };
 
+  const toggleExpand = (callId) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [callId]: !prev[callId],
+    }));
+  };
+
   const renderStructuredData = (data) => {
     if (!data) return null;
 
     if (callType === 'usama') {
       return (
-        <div className='space-y-2'>
-          <p>
-            <strong>MC/MX/FF Number:</strong> {data.mc_mx_ff_number || 'N/A'}
-          </p>
-          <p>
-            <strong>Legal Name:</strong> {data.legal_name || 'N/A'}
-          </p>
-          <p>
-            <strong>Physical Address:</strong> {data.physical_address || 'N/A'}
-          </p>
-          <p>
-            <strong>Phone:</strong> {data.phone || 'N/A'}
-          </p>
-          <p>
-            <strong>Status:</strong> {data.dialed ? 'Dialed' : 'Not Dialed'}
-          </p>
-          <p>
-            <strong>Unanswered Calls:</strong> {data.unansweredCallsCount || 0}
-          </p>
-          <p>
-            <strong>Total Dialed:</strong> {data.numberOfDialed || 0}
-          </p>
-          <p>
-            <strong>Description:</strong>{' '}
-            {data.description || 'No description available'}
-          </p>
-          <p>
-            <strong>Last Dialed:</strong>{' '}
-            {data.lastDialedAt
-              ? new Date(data.lastDialedAt).toLocaleString()
-              : 'Never'}
-          </p>
+        <div className="space-y-2">
+          <p><strong>MC/MX/FF Number:</strong> {data.mc_mx_ff_number || 'N/A'}</p>
+          <p><strong>Legal Name:</strong> {data.legal_name || 'N/A'}</p>
+          <p><strong>Physical Address:</strong> {data.physical_address || 'N/A'}</p>
+          <p><strong>Phone:</strong> {data.phone || 'N/A'}</p>
+          <p><strong>Status:</strong> {data.dialed ? 'Dialed' : 'Not Dialed'}</p>
+          <p><strong>Unanswered Calls:</strong> {data.unansweredCallsCount || 0}</p>
+          <p><strong>Total Dialed:</strong> {data.numberOfDialed || 0}</p>
+          <p><strong>Description:</strong> {data.description || 'No description available'}</p>
         </div>
       );
     }
 
-    // Original implementation for other call types
     return (
-      <div className='space-y-2'>
+      <div className="space-y-2">
         {Object.entries(data).map(([key, value]) => (
           <p key={key}>
             <strong>{key}:</strong> {value || 'N/A'}
@@ -285,25 +264,21 @@ const Dashboard = () => {
 
   const sortedCalls = [...calls].sort((a, b) => {
     if (callType === 'usama') {
-      // Sort Usama's list by dialed status (not dialed first) then by last dialed
       if (a.dialed === b.dialed) {
         return new Date(b.lastDialedAt || 0) - new Date(a.lastDialedAt || 0);
       }
       return a.dialed ? 1 : -1;
     } else {
-      // Original sorting for other call types
       return a.read === b.read ? 0 : a.read ? 1 : -1;
     }
   });
 
   const filteredCalls = sortedCalls.filter((call) => {
     if (callType === 'usama') {
-      // Filtering for Usama's list
       if (filter === 'dialed') return call.dialed;
       if (filter === 'undialed') return !call.dialed;
       return true;
     } else {
-      // Original filtering for other call types
       if (filter === 'read') return call.read;
       if (filter === 'unread') return !call.read;
       if (filter === 'favourite') return call.favourite;
@@ -322,7 +297,7 @@ const Dashboard = () => {
             : "Usama's List"}
         </h2>
 
-        <div className='flex justify-between items-center mb-6'>
+        <div className="flex justify-between items-center mb-6">
           <button
             className='px-4 py-2 rounded-md cursor-pointer bg-[#2c3e50] text-white hover:bg-[#34495e] transition flex items-center'
             onClick={handleGoBack}
@@ -585,7 +560,7 @@ const Dashboard = () => {
         </div>
 
         {isLoading ? (
-          <div className='flex justify-center items-center h-64'>
+          <div className="flex justify-center items-center h-64">
             <LoadingSpinner />
           </div>
         ) : (
@@ -615,60 +590,40 @@ const Dashboard = () => {
               <tbody>
                 {filteredCalls.length > 0 ? (
                   filteredCalls.map((call) => {
-                    const isSelected =
-                      selectedCall?._id === call._id ||
-                      selectedCall?.id === call.id;
+                    const isSelected = selectedCall?._id === call._id || selectedCall?.id === call.id;
+                    const callId = call._id || call.id;
+                    const isExpanded = expandedItems[callId];
 
                     return (
-                      <React.Fragment key={call._id || call.id}>
+                      <React.Fragment key={callId}>
                         <tr
                           className={`border-b hover:bg-[#ecf0f1] cursor-pointer ${
                             call.read ? 'opacity-50' : ''
                           }`}
-                          onClick={() =>
-                            setSelectedCall(isSelected ? null : call)
-                          }
+                          onClick={() => toggleExpand(callId)}
                         >
                           {callType === 'usama' ? (
                             <>
-                              <td className='p-4'>
-                                {call.legal_name || 'N/A'}
-                              </td>
+                              <td className='p-4'>{call.legal_name || 'N/A'}</td>
                               <td className='p-4'>{call.phone || 'N/A'}</td>
+                              <td className='p-4'>{call.mc_mx_ff_number || 'N/A'}</td>
                               <td className='p-4'>
-                                {call.mc_mx_ff_number || 'N/A'}
-                              </td>
-                              <td className='p-4'>
-                                <span
-                                  className={`px-2 py-1 rounded-full text-xs ${
-                                    call.dialed
-                                      ? 'bg-green-100 text-green-800'
-                                      : 'bg-gray-100 text-gray-800'
-                                  }`}
-                                >
+                                <span className={`px-2 py-1 rounded-full text-xs ${
+                                  call.dialed ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                                }`}>
                                   {call.dialed ? 'Dialed' : 'Not Dialed'}
                                 </span>
                               </td>
                             </>
                           ) : (
                             <>
+                              <td className='p-4'>{call?.analysis?.structuredData?.Name || 'N/A'}</td>
+                              <td className='p-4'>{call?.analysis?.structuredData?.Email || 'N/A'}</td>
+                              <td className='p-4'>{call.phoneNumber || 'N/A'}</td>
                               <td className='p-4'>
-                                {call?.analysis?.structuredData?.Name || 'N/A'}
-                              </td>
-                              <td className='p-4'>
-                                {call?.analysis?.structuredData?.Email || 'N/A'}
-                              </td>
-                              <td className='p-4'>
-                                {call.phoneNumber || 'N/A'}
-                              </td>
-                              <td className='p-4'>
-                                <span
-                                  className={`px-2 py-1 rounded-full text-xs ${
-                                    call.read
-                                      ? 'bg-green-100 text-green-800'
-                                      : 'bg-yellow-100 text-yellow-800'
-                                  }`}
-                                >
+                                <span className={`px-2 py-1 rounded-full text-xs ${
+                                  call.read ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                                }`}>
                                   {call.read ? 'Read' : 'Unread'}
                                 </span>
                               </td>
@@ -718,24 +673,18 @@ const Dashboard = () => {
                             )}
                           </td>
                         </tr>
-                        {isSelected && (
+                        {isExpanded && (
                           <tr>
-                            <td
-                              colSpan={callType === 'usama' ? 5 : 5}
-                              className='p-4 bg-[#f8f9fa]'
-                            >
+                            <td colSpan={callType === 'usama' ? 5 : 5} className='p-4 bg-[#f8f9fa]'>
                               <div className='space-y-4'>
                                 {callType === 'usama' ? (
                                   renderStructuredData(call)
                                 ) : (
                                   <>
-                                    {renderStructuredData(
-                                      call?.analysis?.structuredData
-                                    )}
+                                    {renderStructuredData(call?.analysis?.structuredData)}
                                     <p>
                                       <strong>Summary:</strong>{' '}
-                                      {call?.analysis?.summary ||
-                                        'No summary available'}
+                                      {call?.analysis?.summary || 'No summary available'}
                                     </p>
                                     <p>
                                       <strong>Recording:</strong>{' '}
@@ -753,8 +702,7 @@ const Dashboard = () => {
                                         className='bg-[#3498db] text-white px-4 py-2 rounded-md hover:bg-[#2980b9] transition flex items-center'
                                         onClick={() => markAsRead(call.id)}
                                       >
-                                        <CheckIcon className='w-5 h-5 mr-2' />{' '}
-                                        Mark as Read
+                                        <CheckIcon className='w-5 h-5 mr-2' /> Mark as Read
                                       </button>
                                     )}
                                   </>
@@ -768,10 +716,7 @@ const Dashboard = () => {
                   })
                 ) : (
                   <tr>
-                    <td
-                      colSpan={callType === 'usama' ? 5 : 5}
-                      className='p-4 text-center'
-                    >
+                    <td colSpan={callType === 'usama' ? 5 : 5} className="p-4 text-center">
                       No data available
                     </td>
                   </tr>
@@ -788,11 +733,9 @@ const Dashboard = () => {
           <div className='flex items-center space-x-4'>
             <button
               className={`px-4 py-2 rounded-md flex items-center ${
-                currentPage === 1
-                  ? 'bg-gray-300 cursor-not-allowed'
-                  : 'bg-[#2c3e50] text-white hover:bg-[#34495e] cursor-pointer'
+                currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#2c3e50] text-white hover:bg-[#34495e] cursor-pointer'
               }`}
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
             >
               <ChevronLeftIcon className='w-5 h-5 mr-2' /> Previous
@@ -802,13 +745,9 @@ const Dashboard = () => {
             </span>
             <button
               className={`px-4 py-2 rounded-md flex items-center ${
-                currentPage === totalPages
-                  ? 'bg-gray-300 cursor-not-allowed'
-                  : 'bg-[#2c3e50] text-white hover:bg-[#34495e] cursor-pointer'
+                currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#2c3e50] text-white hover:bg-[#34495e] cursor-pointer'
               }`}
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
             >
               Next <ChevronRightIcon className='w-5 h-5 ml-2' />
