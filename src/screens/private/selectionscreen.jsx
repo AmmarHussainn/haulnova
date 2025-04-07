@@ -20,10 +20,16 @@ const SelectionScreen = () => {
           Successful Calls
         </button>
         <button
-          className="w-full cursor-pointer bg-[#e74c3c] text-white py-2 rounded-lg hover:bg-[#c0392b] transition-colors duration-300"
+          className="w-full cursor-pointer bg-[#e74c3c] text-white py-2 rounded-lg mb-4 hover:bg-[#c0392b] transition-colors duration-300"
           onClick={() => handleSelection('unsuccessful')}
         >
           Unsuccessful Calls
+        </button>
+        <button
+          className="w-full cursor-pointer bg-[#3498db] text-white py-2 rounded-lg hover:bg-[#2980b9] transition-colors duration-300"
+          onClick={() => handleSelection('usama')}
+        >
+          Usama's List
         </button>
       </div>
     </div>
