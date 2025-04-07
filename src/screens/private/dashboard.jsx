@@ -243,9 +243,9 @@ const Dashboard = () => {
           <p><strong>Legal Name:</strong> {data.legal_name || 'N/A'}</p>
           <p><strong>Physical Address:</strong> {data.physical_address || 'N/A'}</p>
           <p><strong>Phone:</strong> {data.phone || 'N/A'}</p>
-          <p><strong>Status:</strong> {data.dialed ? 'Dialed' : 'Not Dialed'}</p>
-          <p><strong>Unanswered Calls:</strong> {data.unansweredCallsCount || 0}</p>
-          <p><strong>Total Dialed:</strong> {data.numberOfDialed || 0}</p>
+          {/* <p><strong>Status:</strong> {data.dialed ? 'Dialed' : 'Not Dialed'}</p> */}
+          {/* <p><strong>Unanswered Calls:</strong> {data.unansweredCallsCount || 0}</p> */}
+          {/* <p><strong>Total Dialed:</strong> {data.numberOfDialed || 0}</p> */}
           <p><strong>Description:</strong> {data.description || 'No description available'}</p>
         </div>
       );
@@ -475,7 +475,7 @@ const Dashboard = () => {
               >
                 All
               </button>
-              <button
+              {/* <button
                 className={`px-4 cursor-pointer py-2 rounded-md flex items-center ${
                   filter === 'dialed'
                     ? 'bg-[#3498db] text-white'
@@ -484,7 +484,7 @@ const Dashboard = () => {
                 onClick={() => setFilter('dialed')}
               >
                 <CheckIcon className='w-5 h-5 mr-2' /> Dialed
-              </button>
+              </button> */}
               <button
                 className={`px-4 cursor-pointer py-2 rounded-md flex items-center ${
                   filter === 'undialed'
