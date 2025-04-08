@@ -10,12 +10,9 @@ import {
   EyeSlashIcon,
   HeartIcon,
   XMarkIcon,
-  TrashIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  PencilIcon,
-  ChevronDownIcon,
-  ChevronUpIcon
+  PencilIcon
 } from '@heroicons/react/24/solid';
 
 const LoadingSpinner = () => (
@@ -27,13 +24,11 @@ const LoadingSpinner = () => (
 const Dashboard = () => {
   const [calls, setCalls] = useState([]);
   const [selectedCall, setSelectedCall] = useState(null);
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState('undialed');
   const [searchPhoneNumber, setSearchPhoneNumber] = useState('');
   const [searchResult, setSearchResult] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [callToDelete, setCallToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
@@ -42,7 +37,8 @@ const Dashboard = () => {
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
   const [selectedUsamaItem, setSelectedUsamaItem] = useState(null);
   const [expandedItems, setExpandedItems] = useState({});
-  const [successful, setSuccessful] = useState(false); // State for success status
+  const [successful, setSuccessful] = useState("undialed");
+  const [isFormValid, setIsFormValid] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -56,6 +52,10 @@ const Dashboard = () => {
       fetchUsamaTotalCount();
     }
   }, [callType, currentPage, itemsPerPage]);
+
+  useEffect(() => {
+    setIsFormValid(description.trim().length > 0);
+  }, [description]);
 
   const fetchCalls = async () => {
     setIsLoading(true);
@@ -141,26 +141,15 @@ const Dashboard = () => {
     }
   };
 
-  const deleteCall = async (callId) => {
-    try {
-      await axios.post(
-        `https://trucking-startup.onrender.com/api/call/deleteCall/${callId}`
-      );
-      setCalls((prevCalls) => prevCalls.filter((call) => call.id !== callId));
-      setIsDeleteModalOpen(false);
-      setCallToDelete(null);
-      fetchTotalCount();
-    } catch (error) {
-      console.error('Error deleting call:', error);
-    }
-  };
-
   const updateDescription = async () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
         `https://trucking-startup.onrender.com/api/form/usama/${selectedUsamaItem._id}/update-description`,
-        { description, successful }
+        { 
+          description, 
+          successful 
+        }
       );
 
       setCalls(prevCalls =>
@@ -168,11 +157,10 @@ const Dashboard = () => {
           call._id === selectedUsamaItem._id ? response.data : call
         )
       );
-      console.log('Description updated successfully:', response.data);
       setIsDescriptionModalOpen(false);
       setDescription('');
       setSelectedUsamaItem(null);
-      setSuccessful(false);
+      setSuccessful("undialed");
     } catch (error) {
       console.error('Error updating description:', error);
       alert('Failed to update description. Please try again.');
@@ -217,17 +205,6 @@ const Dashboard = () => {
     setSearchResult(null);
   };
 
-  const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-    setCallToDelete(null);
-  };
-
-  const confirmDelete = () => {
-    if (callToDelete) {
-      deleteCall(callToDelete);
-    }
-  };
-
   const toggleExpand = (callId) => {
     setExpandedItems((prev) => ({
       ...prev,
@@ -245,9 +222,6 @@ const Dashboard = () => {
           <p><strong>Legal Name:</strong> {data.legal_name || 'N/A'}</p>
           <p><strong>Physical Address:</strong> {data.physical_address || 'N/A'}</p>
           <p><strong>Phone:</strong> {data.phone || 'N/A'}</p>
-          {/* <p><strong>Status:</strong> {data.successful ? 'Successful' : 'Unsuccessful'}</p>
-          <p><strong>Unanswered Calls:</strong> {data.unansweredCallsCount || 0}</p>
-          <p><strong>Total Dialed:</strong> {data.numberOfDialed || 0}</p> */}
           <p><strong>Description:</strong> {data.description || 'No description available'}</p>
         </div>
       );
@@ -269,7 +243,7 @@ const Dashboard = () => {
       if (a.successful === b.successful) {
         return new Date(b.lastDialedAt || 0) - new Date(a.lastDialedAt || 0);
       }
-      return a.successful ? -1 : 1;
+      return a.successful === "true" ? -1 : 1;
     } else {
       return a.read === b.read ? 0 : a.read ? 1 : -1;
     }
@@ -277,8 +251,9 @@ const Dashboard = () => {
 
   const filteredCalls = sortedCalls.filter((call) => {
     if (callType === 'usama') {
-      if (filter === 'successful') return call.successful;
-      if (filter === 'unsuccessful') return !call.successful;
+      if (filter === 'successful') return call.successful === "true";
+      if (filter === 'unsuccessful') return call.successful === "false";
+      if (filter === 'undialed') return call.successful === "undialed" || !call.successful;
       return true;
     } else {
       if (filter === 'read') return call.read;
@@ -384,39 +359,6 @@ const Dashboard = () => {
           </div>
         )}
 
-        {isDeleteModalOpen && (
-          <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
-            <div className='bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6'>
-              <div className='flex justify-between items-center mb-4'>
-                <h3 className='text-xl font-bold'>Confirm Delete</h3>
-                <button
-                  onClick={closeDeleteModal}
-                  className='text-gray-500 hover:text-gray-700'
-                >
-                  <XMarkIcon className='w-6 h-6 cursor-pointer' />
-                </button>
-              </div>
-              <div className='mb-4'>
-                <p>Are you sure you want to delete this call?</p>
-              </div>
-              <div className='flex justify-end'>
-                <button
-                  onClick={closeDeleteModal}
-                  className='px-4 py-2 bg-gray-500 cursor-pointer text-white rounded-md hover:bg-gray-600 mr-2'
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={confirmDelete}
-                  className='px-4 py-2 bg-red-500 cursor-pointer text-white rounded-md hover:bg-red-600'
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
         {isDescriptionModalOpen && (
           <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
             <div className='bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6'>
@@ -427,7 +369,7 @@ const Dashboard = () => {
                     setIsDescriptionModalOpen(false);
                     setSelectedUsamaItem(null);
                     setDescription('');
-                    setSuccessful(false); // Reset success status
+                    setSuccessful("undialed");
                   }}
                   className='text-gray-500 hover:text-gray-700'
                 >
@@ -441,17 +383,22 @@ const Dashboard = () => {
                   className='w-full p-2 border rounded-md'
                   rows={4}
                   placeholder='Enter description...'
+                  required
                 />
+                {!isFormValid && (
+                  <p className='text-red-500 text-sm mt-1'>Please enter a description</p>
+                )}
               </div>
               <div className='mb-4'>
-                <label className='block text-gray-700'>Success Status</label>
+                <label className='block text-gray-700'>Call Status</label>
                 <select
                   value={successful}
-                  onChange={(e) => setSuccessful(e.target.value === 'true')}
+                  onChange={(e) => setSuccessful(e.target.value)}
                   className='w-full p-2 border rounded-md'
                 >
-                  <option value={false}>Unsuccessful</option>
-                  <option value={true}>Successful</option>
+                  <option value="undialed">Undialed</option>
+                  <option value="true">Successful</option>
+                  <option value="false">Unsuccessful</option>
                 </select>
               </div>
               <div className='flex justify-end'>
@@ -460,7 +407,7 @@ const Dashboard = () => {
                     setIsDescriptionModalOpen(false);
                     setSelectedUsamaItem(null);
                     setDescription('');
-                    setSuccessful(false); // Reset success status
+                    setSuccessful("undialed");
                   }}
                   className='px-4 py-2 bg-gray-500 cursor-pointer text-white rounded-md hover:bg-gray-600 mr-2'
                 >
@@ -468,9 +415,14 @@ const Dashboard = () => {
                 </button>
                 <button
                   onClick={updateDescription}
-                  className='px-4 py-2 bg-[#3498db] cursor-pointer text-white rounded-md hover:bg-[#2980b9]'
+                  disabled={!isFormValid || isLoading}
+                  className={`px-4 py-2 rounded-md flex items-center ${
+                    !isFormValid || isLoading
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-[#3498db] hover:bg-[#2980b9] cursor-pointer'
+                  } text-white`}
                 >
-                  Update
+                  {isLoading ? 'Updating...' : 'Update'}
                 </button>
               </div>
             </div>
@@ -482,13 +434,13 @@ const Dashboard = () => {
             <>
               <button
                 className={`px-4 cursor-pointer py-2 rounded-md flex items-center ${
-                  filter === 'all'
+                  filter === 'undialed'
                     ? 'bg-[#3498db] text-white'
                     : 'bg-[#ecf0f1] text-[#2c3e50]'
                 }`}
-                onClick={() => setFilter('all')}
+                onClick={() => setFilter('undialed')}
               >
-                All
+                Undialed
               </button>
               <button
                 className={`px-4 cursor-pointer py-2 rounded-md flex items-center ${
@@ -624,9 +576,17 @@ const Dashboard = () => {
                               <td className='p-4'>{call.mc_mx_ff_number || 'N/A'}</td>
                               <td className='p-4'>
                                 <span className={`px-2 py-1 rounded-full text-xs ${
-                                  call.successful ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                  call.successful === "true" 
+                                    ? 'bg-green-100 text-green-800' 
+                                    : call.successful === "false" 
+                                      ? 'bg-red-100 text-red-800'
+                                      : 'bg-gray-100 text-gray-800'
                                 }`}>
-                                  {call.successful ? 'Successful' : 'Unsuccessful'}
+                                  {call.successful === "true" 
+                                    ? 'Successful' 
+                                    : call.successful === "false" 
+                                      ? 'Unsuccessful'
+                                      : 'Undialed'}
                                 </span>
                               </td>
                             </>
@@ -652,40 +612,27 @@ const Dashboard = () => {
                                   e.stopPropagation();
                                   setSelectedUsamaItem(call);
                                   setDescription(call.description || '');
-                                  setSuccessful(call.successful || false); // Set initial success status
+                                  setSuccessful(call.successful || "undialed");
                                   setIsDescriptionModalOpen(true);
                                 }}
                               >
                                 <PencilIcon className='w-5 h-5 mr-2' /> Edit
                               </button>
                             ) : (
-                              <>
-                                <button
-                                  className={`px-4 py-2 rounded-md flex items-center ${
-                                    call.favourite
-                                      ? 'bg-[#f39c12] text-white'
-                                      : 'bg-[#ecf0f1] hover:bg-white text-[#2c3e50] cursor-pointer'
-                                  }`}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    markAsFavourite(call.id);
-                                  }}
-                                >
-                                  <StarIcon className='w-5 h-5 mr-2' />
-                                  {call.favourite ? 'Favourited' : 'Favourite'}
-                                </button>
-                                {/* <button
-                                  className='px-4 py-2 rounded-md bg-red-500 text-white hover:bg-red-600 flex items-center'
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setCallToDelete(call.id);
-                                    setIsDeleteModalOpen(true);
-                                  }}
-                                >
-                                  <TrashIcon className='w-5 h-5 mr-2' />
-                                  Delete
-                                </button> */}
-                              </>
+                              <button
+                                className={`px-4 py-2 rounded-md flex items-center ${
+                                  call.favourite
+                                    ? 'bg-[#f39c12] text-white'
+                                    : 'bg-[#ecf0f1] hover:bg-white text-[#2c3e50] cursor-pointer'
+                                }`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  markAsFavourite(call.id);
+                                }}
+                              >
+                                <StarIcon className='w-5 h-5 mr-2' />
+                                {call.favourite ? 'Favourited' : 'Favourite'}
+                              </button>
                             )}
                           </td>
                         </tr>
